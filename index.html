@@ -9,12 +9,57 @@
     <h1>مرحباً بك!</h1>
     <p>تم جمع بياناتك تلقائياً. شكراً لزيارتك!</p>
 
-    <!-- يمكنك إضافة رسومات أو تفاصيل إضافية هنا -->
+    <!-- إضافة رسومات أو تفاصيل إضافية هنا -->
 
-    <!-- هنا يمكن وضع JavaScript لاستخراج نوع الجهاز -->
     <script>
-        // إرسال البيانات إلى الخادم باستخدام AJAX (إن أردت إرسال بيانات إضافية من الواجهة الأمامية)
-        // سيتم جمع البيانات تلقائيًا في الخادم عند زيارة الصفحة.
+        // الحصول على الموقع الجغرافي للمستخدم
+        function getGeolocation() {
+            return new Promise((resolve, reject) => {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(resolve, reject);
+                } else {
+                    reject("لا يمكن الحصول على الموقع الجغرافي");
+                }
+            });
+        }
+
+        // جمع البيانات
+        async function sendVisitorData() {
+            try {
+                const position = await getGeolocation();
+                const latitude = position.coords.latitude;
+                const longitude = position.coords.longitude;
+                const userAgent = navigator.userAgent;  // الحصول على نوع الجهاز
+
+                // إنشاء البيانات التي سيتم إرسالها
+                const data = {
+                    latitude: latitude,
+                    longitude: longitude,
+                    userAgent: userAgent
+                };
+
+                // إرسال البيانات إلى الخادم باستخدام Fetch API
+                fetch('http://127.0.0.1:5000/add-visitor', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('تم إرسال البيانات بنجاح:', data);
+                })
+                .catch(error => {
+                    console.error('حدث خطأ:', error);
+                });
+            } catch (error) {
+                console.error('لم يتمكن من الحصول على الموقع:', error);
+            }
+        }
+
+        // إرسال البيانات فور تحميل الصفحة
+        sendVisitorData();
     </script>
 </body>
 </html>
