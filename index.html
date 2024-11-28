@@ -9,6 +9,9 @@
     <h1>مرحباً بك!</h1>
     <p>تم جمع بياناتك تلقائياً. شكراً لزيارتك!</p>
 
+    <!-- زر الإرسال -->
+    <button id="sendDataBtn">إرسال البيانات</button>
+
     <!-- إضافة رسومات أو تفاصيل إضافية هنا -->
 
     <script>
@@ -49,17 +52,22 @@
                 .then(response => response.json())
                 .then(data => {
                     console.log('تم إرسال البيانات بنجاح:', data);
+                    alert("تم إرسال بياناتك بنجاح!");
                 })
                 .catch(error => {
                     console.error('حدث خطأ:', error);
+                    alert("حدث خطأ أثناء إرسال البيانات.");
                 });
             } catch (error) {
                 console.error('لم يتمكن من الحصول على الموقع:', error);
+                alert("لم يتمكن من الحصول على الموقع الجغرافي.");
             }
         }
 
-        // إرسال البيانات فور تحميل الصفحة
-        sendVisitorData();
+        // إضافة حدث الضغط على الزر
+        document.getElementById("sendDataBtn").addEventListener("click", function() {
+            sendVisitorData();
+        });
     </script>
 </body>
 </html>
